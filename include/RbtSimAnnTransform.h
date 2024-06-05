@@ -18,6 +18,8 @@
 #include "RbtChromElement.h"
 #include "RbtRand.h"
 
+#include <cstdint>
+
 // Simple class to keep track of Monte Carlo sampling statistics
 class RbtMCStats {
  public:
@@ -85,6 +87,7 @@ class RbtSimAnnTransform: public RbtBaseBiMolTransform {
     RbtSimAnnTransform(const RbtSimAnnTransform&);             // Copy constructor disabled by default
     RbtSimAnnTransform& operator=(const RbtSimAnnTransform&);  // Copy assignment disabled by default
 
+
  protected:
     ////////////////////////////////////////
     // Protected data
@@ -102,14 +105,14 @@ class RbtSimAnnTransform: public RbtBaseBiMolTransform {
     RbtDoubleList m_lastGoodVector;  // Saved chromosome before each MC mutation (to allow revert)
 
     // Actual transform parameters
-    unsigned int block_length;
-    unsigned int num_blocks;
-    double start_temperature;
-    double final_temperature;
-    double step_size;
-    double min_accuracy_rate;
-    double partition_size;
-    unsigned int partition_frequency;
+    uint32_t block_length;
+    uint32_t num_blocks;
+    float start_temperature;
+    float final_temperature;
+    float step_size;
+    float min_accuracy_rate;
+    float partition_size;
+    uint32_t partition_frequency;
     bool scale_chromosome_length;
 };
 

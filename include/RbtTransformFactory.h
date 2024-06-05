@@ -21,6 +21,8 @@
 #include "RbtParameterFileSource.h"
 #include "RbtTransformAgg.h"
 
+#include <transform/types.h>
+
 class RbtTransformFactory {
     // Parameter name which identifies a scoring function definition
     static RbtString _TRANSFORM;
@@ -67,6 +69,9 @@ class RbtTransformFactory {
     RbtTransformFactory(const RbtTransformFactory&);  // Copy constructor disabled by default
 
     RbtTransformFactory& operator=(const RbtTransformFactory&);  // Copy assignment disabled by default
+
+    void CreateTransformFromFile(const string& kind, const string& name);
+    TransformType StringToTransformType(const std::string& str);
 
  protected:
     ////////////////////////////////////////

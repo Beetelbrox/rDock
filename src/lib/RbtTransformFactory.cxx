@@ -51,6 +51,19 @@ RbtBaseTransform* RbtTransformFactory::Create(const RbtString& strTransformClass
     throw RbtBadArgument(_WHERE_, "Unknown transform " + strTransformClass);
 }
 
+
+TransformType StringToTransformType(const std::string& str) {
+    if (str == RbtSimAnnTransform::_CT) return MONTE_CARLO_SIMMULATED_ANNEALING;
+    else if (str == RbtGATransform::_CT) return GENETIC_ALGORITHM_SEARCH;
+    else if (str == RbtAlignTransform::_CT) return ALIGN_LIGAND;
+    else if (str == RbtNullTransform::_CT) return NULL_OP;
+    else if (str == RbtRandLigTransform::_CT) return RANDOMISE_LIGAND_BONDS;
+    else if (str == RbtRandPopTransform::_CT) return RANDOMISE_POPULATION;
+    else if (str == RbtSimplexTransform::_CT) return SIMPLEX_MINIMIZATION;
+    else if (str == RbtTransformAgg::_CT) return AGGREGATE;
+    else throw RbtBadArgument(_WHERE_, "Unknown transform: '" + str + "'");
+}
+
 // Creates an aggregate transform from a parameter file source
 // Each component transform is in a named section, which should minimally contain a TRANSFORM parameter
 // whose value is the class name to instantiate
@@ -103,4 +116,27 @@ RbtTransformAgg* RbtTransformFactory::CreateAggFromFile(
         }
     }
     return pTransformAgg;
+}
+
+void RbtTransformFactory::CreateTransformFromFile(const std::string& kind, const std::string& name) {
+    switch (kind)
+    RbtString strTransformClass(spPrmSource->GetParameterValueAsString(_TRANSFORM));
+            // Create new transform according to the string value of _TRANSFORM parameter
+            RbtBaseTransform* pTransform = Create(strTransformClass, *tIter);
+            // Set all the transform parameters from the rest of the parameters listed
+            RbtStringList prmList = spPrmSource->GetParameterList();
+            for (RbtStringListConstIter prmIter = prmList.begin(); prmIter != prmList.end(); prmIter++) {
+                // Look for scoring function request (PARAM@SF)
+                // Only SetParamRequest currently supported
+                RbtStringList compList = Rbt::ConvertDelimitedStringToList(*prmIter, "@");
+                if (compList.size() == 2) {
+                    RbtRequestPtr spReq(new RbtSFSetParamRequest(
+                        compList[1], compList[0], spPrmSource->GetParameterValueAsString(*prmIter)
+                    ));
+                    pTransform->AddSFRequest(spReq);
+                } else if ((*prmIter) != _TRANSFORM) {  // Skip _TRANSFORM parameter
+                    pTransform->SetParameter(*prmIter, spPrmSource->GetParameterValueAsString(*prmIter));
+                }
+            }
+            pTransformAgg->Add(pTransform);
 }

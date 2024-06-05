@@ -52,7 +52,7 @@ RbtBaseTransform* RbtTransformFactory::Create(const RbtString& strTransformClass
 }
 
 
-TransformType StringToTransformType(const std::string& str) {
+TransformKind StringToTransformType(const std::string& str) {
     if (str == RbtSimAnnTransform::_CT) return MONTE_CARLO_SIMMULATED_ANNEALING;
     else if (str == RbtGATransform::_CT) return GENETIC_ALGORITHM_SEARCH;
     else if (str == RbtAlignTransform::_CT) return ALIGN_LIGAND;
@@ -118,7 +118,7 @@ RbtTransformAgg* RbtTransformFactory::CreateAggFromFile(
     return pTransformAgg;
 }
 
-void RbtTransformFactory::CreateTransformFromFile(const std::string& kind, const std::string& name) {
+void RbtTransformFactory::CreateTransformFromFile(TransformKind type, const std::string& name) {
     switch (kind)
     RbtString strTransformClass(spPrmSource->GetParameterValueAsString(_TRANSFORM));
             // Create new transform according to the string value of _TRANSFORM parameter

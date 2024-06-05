@@ -1,4 +1,4 @@
-enum TransformType {
+enum TransformKind {
     RANDOMISE_POPULATION,
     GENETIC_ALGORITHM_SEARCH,
     MONTE_CARLO_SIMMULATED_ANNEALING,
